@@ -27,7 +27,7 @@ router.post("/create",authenticate, upload.single("file"), createCampaign);
 
 router.post("/all",authenticate, getAllCampaigns);
 
-router.post("/user/:id",authenticate, getUserCampaigns);
+router.post("/user/:id",authenticate,getUserCampaigns);
 
 router.post("/all/:category",authenticate, getCampaignsByCategory);
 

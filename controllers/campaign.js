@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const donations = require("../models/donations");
 const updates = require("../models/records");
 const { Sequelize, where, literal, fn, col } = require("sequelize");
-const {}=require("../")
+
 const db=require("../utils/db");
 const { uploadS3Object } = require("../aws");
 require("dotenv").config()
@@ -35,7 +35,7 @@ const createCampaign = async (req, res, next) => {
       description: description,
       tag: category,
       userId: userId,
-      document: urlPath,
+      document: urlPath[0],
     });
     let amount = 0;
     await Promise.all(
@@ -239,7 +239,20 @@ const getAllCampaigns=async(req,res,next)=>{
          title:title,
          campaignId:campaignId
       })
-      const donors=await donations.findAll({where:{campaignId:campaignId},include:{model:users}})
+      const donors = await donations.findAll({
+        where: { campaignId: campaignId },
+        include: {
+          model: users,
+          attributes: ['email'],
+          as: 'user'
+        },
+        attributes: [], 
+        distinct: true,
+        col: 'user.email' 
+      });
+      
+      
+      
       console.log("Donors are ",donors)
       await Promise.all(
         donors.map(async (donor) => {
@@ -389,6 +402,7 @@ const getAllCampaigns=async(req,res,next)=>{
       const getCampaign=async(req,res,next)=>{
         const transaction=await db.transaction()
         try {
+          console.log("campaign router hitted now",req.user.id)
           const userId=req.user.id
           const {id}=req.params
           const campaignId=parseInt(id)
