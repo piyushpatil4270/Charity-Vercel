@@ -6,15 +6,18 @@ const nodemailer = require("nodemailer");
 const donations = require("../models/donations");
 const updates = require("../models/records");
 const { Sequelize, where, literal, fn, col } = require("sequelize");
-const db=require("../utils/db")
+const {}=require("../")
+const db=require("../utils/db");
+const { uploadS3Object } = require("../aws");
+require("dotenv").config()
 
 
 const transporter = nodemailer.createTransport({
 
   service:"gmail",
   auth: {
-    user: "piyushpatil4270@gmail.com",
-    pass: "uwzocqrsvibhjans",
+    user: process.env.User_Email,
+    pass: process.env.User_Pass,
   },
 });
 
@@ -26,12 +29,13 @@ const createCampaign = async (req, res, next) => {
 
     const { title, description, category, prods } = req.body;
     const userId=req.user.id
+    const urlPath=await uploadS3Object(req.file)
     const campaign = await campaigns.create({
       title: title,
       description: description,
       tag: category,
       userId: userId,
-      document: req.file?.filename,
+      document: urlPath,
     });
     let amount = 0;
     await Promise.all(
