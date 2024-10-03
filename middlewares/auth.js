@@ -1,4 +1,4 @@
-const secretKey="jskfjaiopksfjlk"
+require("dotenv").config()
 const users=require("../models/user")
 const jwt=require("jsonwebtoken")
 const authenticate=async(req,res,next)=>{
@@ -7,7 +7,7 @@ if(!userToken) return res.status(400).json("You are not authorized to access the
 try {
 
     try {
-        const decryptedToken=jwt.verify(userToken,secretKey)
+        const decryptedToken=jwt.verify(userToken,process.env.JWT_SECRETKEY)
         console.log("The decrypted token is ",userToken)
         const  userId=decryptedToken.userId
         console.log("USERID is ",userId)

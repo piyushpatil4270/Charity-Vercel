@@ -1,7 +1,5 @@
-const donations=require("../models/donations")
-const campaigns = require("../models/campaigns")
-const {Sequelize}=require("sequelize")
 const db=require("../utils/db")
+const { handleGetUserDonations } = require("../services/donations")
 
 const getUserDonations=async(req,res,next)=>{
     const transaction=await db.transaction()
@@ -9,9 +7,8 @@ const getUserDonations=async(req,res,next)=>{
         const userId=req.user.id
         const {page,items}=req.body
         const skip=(page-1)*items
-        const {rows,count}=await donations.findAndCountAll({where:{userId:userId},include:{model:campaigns},offset:skip,limit:items})
-       
-        res.status(202).json({donations:rows,total:count})
+        const result=await handleGetUserDonations(userId,page,items,skip)
+        res.status(202).json(result)
         await transaction.commit()
     } catch (error) {
         console.log("Error: ",error)
