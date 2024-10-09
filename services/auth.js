@@ -3,11 +3,12 @@ const bcrypt=require("bcrypt")
 const users=require("../models/user")
 const jwt=require("jsonwebtoken")
 require("dotenv").config()
-
+const db=require("../utils/db")
 
 
 
 exports.handleSignup=async(body)=>{
+   
     const {name,email,password}=body
     const existingUser=await users.findOne({where:{email:email}})
     if(existingUser) return 1

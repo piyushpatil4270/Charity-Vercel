@@ -42,10 +42,11 @@ const createCampaign = async (req, res, next) => {
     const userId = req.user.id;
     const urlPath = await uploadS3Object(req.file);
     await handleCreateCampaign(req.body, userId, urlPath);
-    await transaction.commit();
-    return res
+    
+res
       .status(202)
       .json("Campaign created and products added successfully");
+      await transaction.commit();
   } catch (error) {
     console.log("Error: ", error);
 
