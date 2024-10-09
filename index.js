@@ -35,6 +35,9 @@ const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
 const client = new paypal.core.PayPalHttpClient(environment);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser())
 
 app.post('/api/create-order', async (req, res) => {
   const { amount } = req.body;
