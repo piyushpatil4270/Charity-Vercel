@@ -21,7 +21,7 @@ const campaigns = require("../models/campaigns");
 const authenticate = require("../middlewares/auth");
 
 const storage = multer.memoryStorage(); 
-const upload = multer({ storage: storage });
+const upload = multer({ limits: { fileSize: 50 * 1024 * 1024 }, storage: storage });
 
 router.post("/create",authenticate, upload.single("file"), createCampaign);
 
